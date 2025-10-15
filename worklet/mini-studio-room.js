@@ -70,8 +70,7 @@ class MiniStudioRoom extends MultiWriterRoom {
     })
   }
 
-  async addVideo (id, filePath, info) {
-    const name = path.basename(filePath)
+  async addVideo (id, name, filePath, info) {
     const type = getMimeType(name)
     if (!type || !type.startsWith('video/')) {
       this.opts.write('error', 'Only video files are allowed')

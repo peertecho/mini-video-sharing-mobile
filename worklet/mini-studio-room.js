@@ -24,7 +24,7 @@ class MiniStudioRoom extends MultiWriterRoom {
     await super._open()
 
     let blobsCore
-    if (!this.invite && !this.baseLocalLength) {
+    if (!this.invite) {
       blobsCore = this.store.get({ name: 'blobs' })
       await blobsCore.ready()
       this.addEvent('blobsCoreKey', idEnc.normalize(blobsCore.key))

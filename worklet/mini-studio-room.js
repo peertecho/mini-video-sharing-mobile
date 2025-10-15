@@ -23,19 +23,7 @@ class MiniStudioRoom extends MultiWriterRoom {
   async _open () {
     await super._open()
 
-    let blobsCore
-    if (!this.invite) {
-      blobsCore = this.store.get({ name: 'blobs' })
-      await blobsCore.ready()
-      this.addEvent('blobsCoreKey', idEnc.normalize(blobsCore.key))
-    } else {
-      const blobsCoreKey = await this._getBlobsCoreKey()
-      blobsCore = this.store.get(idEnc.decode(blobsCoreKey))
-      await blobsCore.ready()
-    }
-    this.swarm.join(blobsCore.discoveryKey)
-
-    this.blobs = new Hyperblobs(blobsCore)
+    this.blobs = new Hyperblobs(this.store.get({ name: 'blobs' }))
     await this.blobs.ready()
 
     this.blobServer = new BlobServer(this.store.session())
@@ -65,24 +53,19 @@ class MiniStudioRoom extends MultiWriterRoom {
     })
   }
 
-  async _getBlobsCoreKey () {
-    const events = await this.getEvents()
-    const blobsCoreKey = events.find(item => item.id === 'blobsCoreKey')?.data
-    if (blobsCoreKey) return blobsCoreKey
-
-    await new Promise(resolve => setTimeout(resolve, 100))
-    return this._getBlobsCoreKey()
-  }
-
   async getVideos ({ reverse = true, limit = 100 } = {}) {
     const videos = await this.view.db.find(`@${this.dbNamespace}/videos`, { reverse, limit }).toArray()
-    return videos.map(item => {
-      const link = this.blobServer.getLink(this.blobs.core.key, { blob: item.blob, type: item.type })
+    return await Promise.all(videos.map(async item => {
+      const blobsCore = this.store.get({ key: idEnc.decode(item.blob.key) })
+      await blobsCore.ready()
+      this.swarm.join(blobsCore.discoveryKey)
+      const link = this.blobServer.getLink(item.blob.key, { blob: item.blob, type: item.type })
       return { ...item, link }
-    })
+    }))
   }
 
-  async addVideo (id, name, filePath, info) {
+  async addVideo (id, filePath, info) {
+    const name = path.basename(filePath)
     const type = getMimeType(name)
     if (!type || !type.startsWith('video/')) {
       this.opts.write('error', 'Only video files are allowed')
@@ -96,7 +79,7 @@ class MiniStudioRoom extends MultiWriterRoom {
       ws.on('close', resolve)
       rs.pipe(ws)
     })
-    const blob = { key: this.blobs.core.key, ...ws.id }
+    const blob = { key: idEnc.normalize(this.blobs.core.key), ...ws.id }
 
     await this.base.append(
       MultiWriterDispatch.encode(`@${this.dbNamespace}/add-video`, { id, name, type, blob, info })

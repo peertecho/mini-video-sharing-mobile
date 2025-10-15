@@ -32,6 +32,7 @@ class MiniStudioRoom extends MultiWriterRoom {
   }
 
   async _close () {
+    await Promise.all(Object.values(this.blobsCores).map(core => core.close()))
     await this.blobServer.close()
     await this.blobs.close()
     await super._close()

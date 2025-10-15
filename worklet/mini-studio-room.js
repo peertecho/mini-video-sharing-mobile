@@ -71,7 +71,7 @@ class MiniStudioRoom extends MultiWriterRoom {
     if (blobsCoreKey) return blobsCoreKey
 
     await new Promise(resolve => setTimeout(resolve, 100))
-    return _getBlobsCoreKey()
+    return this._getBlobsCoreKey()
   }
 
   async getVideos ({ reverse = true, limit = 100 } = {}) {

@@ -33,7 +33,7 @@ export default function App () {
     try {
       const result = await getDocumentAsync({ type: 'video/*' })
       for (const asset of result.assets) {
-        addVideo(asset.uri.substring('file://'.length))
+        addVideo({ name: asset.name, path: asset.uri.substring('file://'.length) })
       }
     } catch (err) {
       alert('Failed to pick a file')

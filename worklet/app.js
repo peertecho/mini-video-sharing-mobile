@@ -64,7 +64,7 @@ async function onData (obj) {
     const videos = await room.getVideos()
     write('videos', videos)
   } else if (obj.tag === 'add-video') {
-    await room.addVideo(randomId(), obj.data, { at: new Date().toISOString() })
+    await room.addVideo(randomId(), obj.data.name, obj.data.path, { at: new Date().toISOString() })
   } else if (obj.tag === 'get-messages') {
     const messages = await room.getMessages()
     write('messages', messages)

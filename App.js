@@ -90,46 +90,49 @@ export default function App () {
       </View>
       <View style={styles.videosSection}>
         <Text style={styles.title}>Videos</Text>
-        {videos.map((video) => (
-          <View key={video.id}>
-            <View style={styles.videoRow}>
-              <Text style={styles.videoName}>{video.name}</Text>
-              <TouchableOpacity
-                style={styles.playButton}
-                onPress={() => setPlayerId(playerId === video.id ? undefined : video.id)}
-              >
-                <Text style={styles.playText}>{playerId === video.id ? 'Stop' : 'Play'}</Text>
-              </TouchableOpacity>
-            </View>
-            {playerId === video.id && (
-              <View style={styles.playerSection}>
-                <Video
-                  source={{ uri: video.link }}
-                  style={styles.videoPlayer}
-                  useNativeControls
-                  resizeMode="contain"
-                  isLooping
-                  shouldPlay
-                />
-                <View style={styles.inputRow}>
-                  <TextInput
-                    style={styles.input}
-                    value={input}
-                    onChangeText={setInput}
-                    placeholder='Type your comment...'
-                  />
-                  <Button title='Send' onPress={() => onSend(video.id)} />
-                </View>
-                <Text style={styles.title}>Comments</Text>
-                <ScrollView style={styles.messages}>
-                  {messages.filter(msg => msg.info.videoId === video.id).map((msg, idx) => (
-                    <Text key={idx} style={styles.message}>{`${msg.text} ~ ${msg.info.at}`}</Text>
-                  ))}
-                </ScrollView>
+        {videos.map((video) => {
+          const comments = messages.filter(msg => msg.info.videoId === video.id)
+          return (
+            <View key={video.id}>
+              <View style={styles.videoRow}>
+                <Text style={styles.videoName}>{video.name}</Text>
+                <TouchableOpacity
+                  style={styles.playButton}
+                  onPress={() => setPlayerId(playerId === video.id ? undefined : video.id)}
+                >
+                  <Text style={styles.playText}>{playerId === video.id ? 'Stop' : 'Play'}</Text>
+                </TouchableOpacity>
               </View>
-            )}
-          </View>
-        ))}
+              {playerId === video.id && (
+                <View style={styles.playerSection}>
+                  <Video
+                    source={{ uri: video.link }}
+                    style={styles.videoPlayer}
+                    useNativeControls
+                    resizeMode="contain"
+                    isLooping
+                    shouldPlay
+                  />
+                  <View style={styles.inputRow}>
+                    <TextInput
+                      style={styles.input}
+                      value={input}
+                      onChangeText={setInput}
+                      placeholder='Type your comment...'
+                    />
+                    <Button title='Send' onPress={() => onSend(video.id)} />
+                  </View>
+                  <Text style={styles.title}>Comments ({comments.length})</Text>
+                  <ScrollView>
+                    {comments.map((msg, idx) => (
+                      <Text key={idx} style={styles.message}>{`${msg.text} ~ ${msg.info.at}`}</Text>
+                    ))}
+                  </ScrollView>
+                </View>
+              )}
+            </View>
+          )
+        })}
       </View>
     </>
   )
@@ -224,11 +227,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 12
-  },
-  messages: {
-    flex: 1,
-    alignSelf: 'stretch',
-    marginBottom: 16
   },
   message: {
     marginVertical: 2

@@ -18,6 +18,7 @@ class MiniStudioRoom extends MultiWriterRoom {
     this.opts = opts
     this.blobs = null
     this.blobServer = null
+    this.blobsCores = {}
   }
 
   async _open () {
@@ -55,13 +56,18 @@ class MiniStudioRoom extends MultiWriterRoom {
 
   async getVideos ({ reverse = true, limit = 100 } = {}) {
     const videos = await this.view.db.find(`@${this.dbNamespace}/videos`, { reverse, limit }).toArray()
-    return await Promise.all(videos.map(async item => {
-      const blobsCore = this.store.get({ key: idEnc.decode(item.blob.key) })
-      await blobsCore.ready()
-      this.swarm.join(blobsCore.discoveryKey)
+    for (const item of videos) {
+      if (!this.blobsCores[item.blob.key]) {
+        const blobsCore = this.store.get({ key: idEnc.decode(item.blob.key) })
+        this.blobsCores[item.blob.key] = blobsCore
+        await blobsCore.ready()
+        this.swarm.join(blobsCore.discoveryKey)
+      }
+    }
+    return videos.map(item => {
       const link = this.blobServer.getLink(item.blob.key, { blob: item.blob, type: item.type })
       return { ...item, link }
-    }))
+    })
   }
 
   async addVideo (id, filePath, info) {

@@ -1,6 +1,6 @@
 # Mini Video Sharing Mobile (aka Mini Studio)
 
-A mini video sharing mobile app where multiple members can share videos and comment below each video
+A mini video sharing mobile app where multiple members can share videos and comments below each video
 
 ## Usage
 Start the first writer to create a room, and get the invite

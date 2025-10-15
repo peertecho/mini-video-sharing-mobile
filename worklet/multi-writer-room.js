@@ -46,22 +46,24 @@ class MultiWriterRoom extends ReadyResource {
 
     this.base = null
     this.baseLocal = null
+    this.baseLocalLength = null
     this.pairMember = null
   }
 
   async _open () {
     await this.store.ready()
 
+    const baseLocal = Autobase.getLocalCore(this.store)
+    this.baseLocal = baseLocal
+    await baseLocal.ready()
+    const baseLocalKey = baseLocal.key
+    const baseLocalLength = baseLocal.length
+    this.baseLocalLength = baseLocalLength
+    await baseLocal.close()
+
     let key
     let encryptionKey
     if (this.invite) {
-      const baseLocal = Autobase.getLocalCore(this.store)
-      this.baseLocal = baseLocal
-      await baseLocal.ready()
-      const baseLocalKey = baseLocal.key
-      const baseLocalLength = baseLocal.length
-      await baseLocal.close()
-
       if (!baseLocalLength) {
         console.log('~ Joining')
         const res = await new Promise((resolve) => {

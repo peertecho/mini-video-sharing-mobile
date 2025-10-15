@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const idEnc = require('hypercore-id-encoding')
 const getMimeType = require('get-mime-type')
 const Hyperblobs = require('hyperblobs')
 const BlobServer = require('hypercore-blob-server')
@@ -22,7 +23,19 @@ class MiniStudioRoom extends MultiWriterRoom {
   async _open () {
     await super._open()
 
-    this.blobs = new Hyperblobs(this.store.get({ name: 'blobs' }))
+    let blobsCore
+    if (!this.invite && !this.baseLocalLength) {
+      blobsCore = this.store.get({ name: 'blobs' })
+      await blobsCore.ready()
+      this.addEvent('blobsCoreKey', idEnc.normalize(blobsCore.key))
+    } else {
+      const blobsCoreKey = await this._getBlobsCoreKey()
+      blobsCore = this.store.get(idEnc.decode(blobsCoreKey))
+      await blobsCore.ready()
+    }
+    this.swarm.join(blobsCore.discoveryKey)
+
+    this.blobs = new Hyperblobs(blobsCore)
     await this.blobs.ready()
 
     this.blobServer = new BlobServer(this.store.session())
@@ -50,6 +63,15 @@ class MiniStudioRoom extends MultiWriterRoom {
     this.router.add(`@${this.dbNamespace}/del-message`, async (data, context) => {
       await context.view.db.delete(`@${this.dbNamespace}/messages`, { id: data.id })
     })
+  }
+
+  async _getBlobsCoreKey () {
+    const events = await this.getEvents()
+    const blobsCoreKey = events.find(item => item.id === 'blobsCoreKey')?.data
+    if (blobsCoreKey) return blobsCoreKey
+
+    await new Promise(resolve => setTimeout(resolve, 100))
+    return _getBlobsCoreKey()
   }
 
   async getVideos ({ reverse = true, limit = 100 } = {}) {

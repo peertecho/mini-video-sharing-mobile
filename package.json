@@ -1,0 +1,70 @@
+{
+  "name": "mini-studio-mobile",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "clean": "ROOT=$(git rev-parse --show-toplevel); watchman watch-del $ROOT; watchman watch-project $ROOT",
+    "db:gen": "node schema.js",
+    "build:worklet": "./scripts/build-worklet.sh",
+    "build:worklet:watch": "nodemon --watch worklet --ext js,cjs --exec npm run build:worklet",
+    "start": "npm run build:worklet && expo start -d",
+    "ios": "expo run:ios",
+    "android": "expo run:android",
+    "dev:ios": "concurrently --kill-others npm:build:worklet:watch npm:ios",
+    "dev:android": "concurrently --kill-others npm:build:worklet:watch npm:android"
+  },
+  "dependencies": {
+    "autobase": "^7.20.0",
+    "b4a": "^1.7.3",
+    "bare-fs": "^4.4.10",
+    "bare-path": "^3.0.0",
+    "bare-process": "^4.2.1",
+    "blind-pairing": "^2.3.1",
+    "corestore": "^7.5.0",
+    "events": "^3.3.0",
+    "expo": "^54.0.10",
+    "expo-av": "~16.0.7",
+    "expo-build-properties": "^1.0.9",
+    "expo-clipboard": "~8.0.7",
+    "expo-document-picker": "~14.0.7",
+    "get-mime-type": "^2.0.2",
+    "graceful-goodbye": "^1.3.3",
+    "hyperbee": "^2.26.5",
+    "hyperblobs": "^2.8.0",
+    "hypercore": "^11.18.2",
+    "hypercore-blob-server": "^1.12.0",
+    "hyperdb": "^4.19.0",
+    "hyperdispatch": "^1.4.3",
+    "hyperschema": "^1.16.0",
+    "hyperswarm": "^4.14.2",
+    "react": "19.1.0",
+    "react-native": "~0.81.4",
+    "react-native-b4a": "^0.0.4",
+    "react-native-bare-kit": "^0.9.3",
+    "ready-resource": "^1.2.0",
+    "resolve-reject-promise": "^1.1.0",
+    "z32": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/b4a": "^1.6.5",
+    "@types/react": "^19.1.15",
+    "@types/streamx": "^2.9.5",
+    "bare-pack": "^1.4.6",
+    "concurrently": "^9.2.1",
+    "nodemon": "^3.1.10"
+  },
+  "imports": {
+    "fs": {
+      "bare": "bare-fs",
+      "default": "fs"
+    },
+    "path": {
+      "bare": "bare-path",
+      "default": "path"
+    },
+    "process": {
+      "bare": "bare-process",
+      "default": "process"
+    }
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "offset": 0,
+  "schema": [
+    {
+      "id": 0,
+      "name": "@ministudio/add-writer",
+      "requestType": "@ministudio/writers",
+      "version": 1
+    },
+    {
+      "id": 1,
+      "name": "@ministudio/add-invite",
+      "requestType": "@ministudio/invites",
+      "version": 1
+    },
+    {
+      "id": 2,
+      "name": "@ministudio/del-invite",
+      "requestType": "@ministudio/invites",
+      "version": 1
+    },
+    {
+      "id": 3,
+      "name": "@ministudio/add-user",
+      "requestType": "@ministudio/users",
+      "version": 1
+    },
+    {
+      "id": 4,
+      "name": "@ministudio/del-user",
+      "requestType": "@ministudio/users",
+      "version": 1
+    },
+    {
+      "id": 5,
+      "name": "@ministudio/add-video",
+      "requestType": "@ministudio/videos",
+      "version": 1
+    },
+    {
+      "id": 6,
+      "name": "@ministudio/del-video",
+      "requestType": "@ministudio/videos",
+      "version": 1
+    },
+    {
+      "id": 7,
+      "name": "@ministudio/add-message",
+      "requestType": "@ministudio/messages",
+      "version": 1
+    },
+    {
+      "id": 8,
+      "name": "@ministudio/del-message",
+      "requestType": "@ministudio/messages",
+      "version": 1
+    },
+    {
+      "id": 9,
+      "name": "@ministudio/add-event",
+      "requestType": "@ministudio/events",
+      "version": 1
+    },
+    {
+      "id": 10,
+      "name": "@ministudio/del-event",
+      "requestType": "@ministudio/events",
+      "version": 1
+    }
+  ]
+}

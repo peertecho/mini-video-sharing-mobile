@@ -1,0 +1,19 @@
+{
+  "version": 0,
+  "offset": 0,
+  "schema": [
+    {
+      "name": "events",
+      "namespace": "ministudio",
+      "id": 0,
+      "type": 1,
+      "indexes": [],
+      "schema": "@ministudio/events",
+      "derived": false,
+      "key": [
+        "id"
+      ],
+      "trigger": null
+    }
+  ]
+}

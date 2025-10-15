@@ -1,0 +1,71 @@
+{
+  "version": 0,
+  "offset": 0,
+  "schema": [
+    {
+      "name": "writers",
+      "namespace": "ministudio",
+      "id": 0,
+      "type": 1,
+      "indexes": [],
+      "schema": "@ministudio/writers",
+      "derived": false,
+      "key": [
+        "key"
+      ],
+      "trigger": null
+    },
+    {
+      "name": "invites",
+      "namespace": "ministudio",
+      "id": 1,
+      "type": 1,
+      "indexes": [],
+      "schema": "@ministudio/invites",
+      "derived": false,
+      "key": [
+        "id"
+      ],
+      "trigger": null
+    },
+    {
+      "name": "users",
+      "namespace": "ministudio",
+      "id": 2,
+      "type": 1,
+      "indexes": [],
+      "schema": "@ministudio/users",
+      "derived": false,
+      "key": [
+        "id"
+      ],
+      "trigger": null
+    },
+    {
+      "name": "videos",
+      "namespace": "ministudio",
+      "id": 3,
+      "type": 1,
+      "indexes": [],
+      "schema": "@ministudio/videos",
+      "derived": false,
+      "key": [
+        "id"
+      ],
+      "trigger": null
+    },
+    {
+      "name": "messages",
+      "namespace": "ministudio",
+      "id": 4,
+      "type": 1,
+      "indexes": [],
+      "schema": "@ministudio/messages",
+      "derived": false,
+      "key": [
+        "id"
+      ],
+      "trigger": null
+    }
+  ]
+}

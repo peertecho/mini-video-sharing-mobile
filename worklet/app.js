@@ -45,7 +45,7 @@ async function onData (obj) {
 
   if (obj.tag === 'reset') {
     write('invite', undefined)
-    const dir = path.join(obj.data, 'mini-chat')
+    const dir = path.join(obj.data, 'mini-studio')
     if (room) {
       await room.close()
       room = undefined
@@ -55,7 +55,7 @@ async function onData (obj) {
     return
   }
   if (obj.tag === 'resume') {
-    const storage = path.join(obj.data, 'mini-chat', 'storage')
+    const storage = path.join(obj.data, 'mini-studio', 'storage')
     room = new MiniStudioRoom({ storage })
     goodbye(() => room.close())
     const shouldResume = await room.checkResume()

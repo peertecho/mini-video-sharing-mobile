@@ -72,10 +72,15 @@ export default function App () {
           />
         </View>
       )}
-      <Button
-        title={mode === 'create' ? 'Create Room' : 'Join Room'}
-        onPress={onRoomCTA}
-      />
+      <View style={styles.inviteActionRow}>
+        <Button
+          title={mode === 'create' ? 'Create Room' : 'Join Room'}
+          onPress={onRoomCTA}
+        />
+        <TouchableOpacity style={styles.resetButton} onPress={() => onReset()}>
+          <Text style={styles.resetText}>Reset</Text>
+        </TouchableOpacity>
+      </View>
     </>
   )
 

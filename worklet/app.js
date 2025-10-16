@@ -43,6 +43,17 @@ async function onClose () {
 async function onData (obj) {
   if (!obj.data?.noLog) write('log', obj)
 
+  if (obj.tag === 'reset') {
+    write('invite', undefined)
+    const dir = path.join(obj.data, 'mini-chat')
+    if (room) {
+      await room.close()
+      room = undefined
+    }
+    await fs.rm(dir, { recursive: true, force: true })
+    write('invite', '')
+    return
+  }
   if (obj.tag === 'resume') {
     const storage = path.join(obj.data, 'mini-chat', 'storage')
     room = new MiniChatRoom({ storage })
@@ -78,23 +89,22 @@ async function onData (obj) {
   await room.ready()
 
   if (obj.tag === 'get-videos') {
-    const videos = await room.getVideos()
-    write('videos', videos)
-  } else if (obj.tag === 'add-video') {
-    await room.addVideo(randomId(), obj.data.name, obj.data.path, { at: new Date().toISOString() })
-  } else if (obj.tag === 'get-messages') {
-    const messages = await room.getMessages()
-    write('messages', messages)
-  } else if (obj.tag === 'add-message') {
-    await room.addMessage(randomId(), obj.data.text, { ...obj.data.info, at: new Date().toISOString() })
-  } else if (obj.tag === 'reset') {
-    write('invite', undefined)
-    const storage = room.storage
-    await room.close()
-    room = undefined
-    await fs.rm(storage, { recursive: true, force: true })
-    write('invite', '')
+    write('videos', await room.getVideos())
+    return
   }
+  if (obj.tag === 'add-video') {
+    await room.addVideo(randomId(), obj.data.name, obj.data.path, { at: new Date().toISOString() })
+    return
+  }
+  if (obj.tag === 'get-messages') {
+    write('messages', await room.getMessages())
+    return
+  }
+  if (obj.tag === 'add-message') {
+    await room.addMessage(randomId(), obj.data.text, { ...obj.data.info, at: new Date().toISOString() })
+    return
+  }
+  write('error', `Unknown message: ${obj}`)
 }
 
 function randomId () {

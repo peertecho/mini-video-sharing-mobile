@@ -56,7 +56,7 @@ async function onData (obj) {
   }
   if (obj.tag === 'resume') {
     const storage = path.join(obj.data, 'mini-chat', 'storage')
-    room = new MiniChatRoom({ storage })
+    room = new MiniStudioRoom({ storage })
     goodbye(() => room.close())
     const shouldResume = await room.checkResume()
     if (shouldResume) {

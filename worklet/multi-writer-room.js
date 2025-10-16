@@ -70,7 +70,6 @@ class MultiWriterRoom extends ReadyResource {
     let key
     let encryptionKey
     if (!shouldResume && this.invite) {
-      console.log('~ Joining')
       const res = await new Promise((resolve) => {
         this.pairing.addCandidate({
           invite: z32.decode(this.invite),

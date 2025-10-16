@@ -57,7 +57,10 @@ const useWorklet = () => {
     ready: (invite) => write('ready', { documentDir: Paths.document.uri.substring('file://'.length), invite }),
     addVideo: (filePath) => write('add-video', filePath),
     addMessage: (message) => write('add-message', message),
-    reset: () => write('reset', Paths.document.uri.substring('file://'.length)),
+    reset: () => {
+      write('reset', Paths.document.uri.substring('file://'.length))
+      setVideos([])
+    },
     clearError: () => setError(''),
     invite,
     videos,

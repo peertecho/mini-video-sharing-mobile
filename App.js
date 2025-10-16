@@ -15,9 +15,13 @@ export default function App () {
   const [input, setInput] = useState('')
   const [playerId, setPlayerId] = useState()
 
-  const roomReady = !!invite
+  const initializing = invite === undefined
 
   const onRoomCTA = () => {
+    if (initializing) {
+      alert('Still initializing, please try later')
+      return
+    }
     if (mode === 'join' && !joinInvite) {
       alert('Please type invite to join room')
       return
@@ -47,6 +51,7 @@ export default function App () {
 
   const renderSetupRoom = () => (
     <>
+      {initializing && <Text style={styles.title}>Initializing...</Text>}
       <View style={styles.radioRow}>
         <TouchableOpacity style={styles.radioOption} onPress={() => setMode('create')}>
           <View style={[styles.radioCircle, mode === 'create' && styles.radioSelected]} />
@@ -148,7 +153,7 @@ export default function App () {
             </TouchableOpacity>
           </>
         )}
-        {roomReady ? renderStudioRoom() : renderSetupRoom()}
+        {invite ? renderStudioRoom() : renderSetupRoom()}
       </View>
     </TouchableWithoutFeedback>
   )

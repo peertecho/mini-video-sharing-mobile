@@ -43,14 +43,31 @@ async function onClose () {
 async function onData (obj) {
   if (!obj.data?.noLog) write('log', obj)
 
+  if (obj.tag === 'resume') {
+    const storage = path.join(obj.data, 'mini-chat', 'storage')
+    room = new MiniChatRoom({ storage })
+    goodbye(() => room.close())
+    const shouldResume = await room.checkResume()
+    if (shouldResume) {
+      await room.ready()
+      write('resumed', await room.createInvite())
+    } else {
+      write('resumed', '')
+    }
+    return
+  }
   if (obj.tag === 'ready') {
     const { documentDir, invite } = obj.data
-    const storage = path.join(documentDir, 'mini-studio', 'storage')
-    room = new MiniStudioRoom({ storage, invite, write })
-    goodbye(() => room.close())
+    if (!room) {
+      const storage = path.join(documentDir, 'mini-studio', 'storage')
+      room = new MiniStudioRoom({ storage, invite, write })
+      goodbye(() => room.close())
+    } else if (invite) {
+      room.invite = invite
+    }
     await room.ready()
 
-    write('invite', invite || await room.createInvite())
+    write('invite', room.invite || await room.createInvite())
     return
   }
 
@@ -71,10 +88,12 @@ async function onData (obj) {
   } else if (obj.tag === 'add-message') {
     await room.addMessage(randomId(), obj.data.text, { ...obj.data.info, at: new Date().toISOString() })
   } else if (obj.tag === 'reset') {
-    write('invite', '')
+    write('invite', undefined)
     const storage = room.storage
     await room.close()
+    room = undefined
     await fs.rm(storage, { recursive: true, force: true })
+    write('invite', '')
   }
 }
 
